@@ -1,6 +1,6 @@
 /* =========================================================
    VERDURE — Premium editorial quarterly
-   Headings: Inter Tight (sans)   Body: Fruitygreen   Meta: JetBrains Mono
+   Headings: Inter Tight (sans)   Body: Delius (Google Fonts, SIL OFL)   Meta: JetBrains Mono
    Text colour: fruity green family
    ========================================================= */
 
@@ -23,7 +23,7 @@
   --line-light: rgba(211, 227, 166, 0.22);
 
   --f-head: "Inter Tight", "Helvetica Neue", Arial, sans-serif;
-  --f-body: "Fruitygreen W01 Bold", "Trebuchet MS", system-ui, sans-serif;
+  --f-body: "Delius", "Trebuchet MS", system-ui, sans-serif;
   --f-mono: "JetBrains Mono", ui-monospace, Menlo, monospace;
 
   --pad: clamp(16px, 3.2vw, 56px);
