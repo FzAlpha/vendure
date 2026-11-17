@@ -1,9 +1,19 @@
 /* =========================================================
-   VERDURE — interactions
+   VÉRDURÉ × VELVANÉ — interactions
    Lenis smooth scroll + GSAP (ScrollTrigger, SplitText)
+   © 2026 Velvané. All rights reserved. Proprietary; see LICENSE.
    ========================================================= */
 (() => {
   const html = document.documentElement;
+
+  // A signature for anyone who opens the console.
+  console.log(
+    '%cVérduré%c × %cVelvané',
+    'font: 700 26px "Inter Tight", sans-serif; letter-spacing: -0.04em; color: #2d5a1b;',
+    'font: 300 22px "Inter Tight", sans-serif; color: #9dbb72;',
+    'font: 500 22px "Inter Tight", sans-serif; letter-spacing: 0.08em; color: #0d1a0e;'
+  );
+  console.log('%cDesigned & built by Velvané · © 2026, all rights reserved · https://website-checker-lmdx.vercel.app', 'font: 11px "JetBrains Mono", monospace; color: #5f8a3d;');
   const $ = (s, c = document) => c.querySelector(s);
   const $$ = (s, c = document) => [...c.querySelectorAll(s)];
 
@@ -210,6 +220,10 @@
   const ambient = [];
   if (!reduce) {
     gsap.fromTo(loaderChars, { y: 0, yPercent: 115 }, { y: 0, yPercent: 0, duration: 1.3, ease: 'expo.out', stagger: 0.06, delay: 0.25 });
+    // "Presented by", then the Velvané wordmark draws stroke by stroke; the accent lands last.
+    gsap.to('.loader__by', { opacity: 1, duration: 0.9, ease: 'sine.out', delay: 0.7 });
+    gsap.to($$('.loader__vlv path:not(.vlv__accent)'), { strokeDashoffset: 0, duration: 0.55, ease: 'power2.inOut', stagger: 0.13, delay: 0.85 });
+    gsap.to('.loader__vlv .vlv__accent', { strokeDashoffset: 0, duration: 0.35, ease: 'power3.out', delay: 1.95 });
     gsap.fromTo(plant, { rotation: -1.4, svgOrigin: '100 262' }, { rotation: 1.4, svgOrigin: '100 262', duration: 2.8, ease: 'sine.inOut', yoyo: true, repeat: -1 });
     gsap.fromTo('.loader__glow', { scale: 0.92, opacity: 0.75 }, { scale: 1.06, opacity: 1, duration: 3, ease: 'sine.inOut', yoyo: true, repeat: -1 });
     spores.forEach((s, i) => {
@@ -278,10 +292,15 @@
     const lift = () => -(innerHeight + loader.querySelector('.loader__curve').getBoundingClientRect().height + 2);
     tl.to(loaderChars, { yPercent: -115, duration: 0.7, ease: 'power3.in', stagger: 0.035, overwrite: 'auto' }, 0.15)
       .to('.loader__sprout', { y: -40, scale: 1.04, opacity: 0, duration: 0.8, ease: 'power3.in' }, 0.1)
+      .to('.loader__credit', { y: 16, opacity: 0, duration: 0.6, ease: 'power3.in' }, 0.2)
       .to(loader, { y: lift, duration: 1.3, ease: 'power3.inOut' }, 0.7)
       .to(curve, { attr: { d: BULGE }, duration: 0.65, ease: 'power2.in' }, 0.7)
       .to(curve, { attr: { d: FLAT }, duration: 0.65, ease: 'power2.out' }, 1.35)
       .from('.hero__video', { scale: 1.35, duration: 2.2, ease: 'expo.out' }, 1.15)
+      // opening credit, one beat before the masthead
+      .from('.hero__presents', { x: -16, opacity: 0, duration: 1, ease: 'expo.out' }, '<0.05')
+      .fromTo($$('.hero__vlv path'), { strokeDasharray: 1, strokeDashoffset: 1 },
+        { strokeDashoffset: 0, duration: 0.5, ease: 'power2.inOut', stagger: 0.07, clearProps: 'strokeDasharray,strokeDashoffset' }, '<')
       .from(heroChars, { yPercent: 105, duration: 1.5, ease: 'expo.out', stagger: 0.055 }, '<0.1')
       .from('.hero__lede', { y: 24, opacity: 0, duration: 1, ease: 'expo.out', stagger: 0.06 }, '<0.35')
       .from(nav, { y: -24, opacity: 0, duration: 1, ease: 'expo.out', clearProps: 'transform,opacity' }, '<');
@@ -337,6 +356,7 @@
     gsap.to('.hero__media', { yPercent: 22, ease: 'none', scrollTrigger: heroST });
     gsap.to('.hero__title', { yPercent: -28, ease: 'none', scrollTrigger: { ...heroST } });
     gsap.to('.hero__bottom', { opacity: 0, ease: 'none', scrollTrigger: { ...heroST, end: '50% top' } });
+    gsap.to('.hero__credit', { yPercent: -260, opacity: 0, ease: 'none', scrollTrigger: { ...heroST, end: '45% top' } });
 
     /* ---- Headings: masked line reveal ---- */
     if (hasSplit) {
@@ -498,14 +518,23 @@
       { rotateY: 12, rotateX: -2, rotateZ: 2, y: -40, ease: 'none',
         scrollTrigger: { trigger: '.print', start: 'top bottom', end: 'bottom top', scrub: true } });
 
-    /* ---- Footer wordmark ---- */
+    /* ---- Footer sign-off: Vérduré rises, then × and the Velvané wordmark draw in ---- */
     if (hasSplit) {
-      const mark = SplitText.create('.footer__mark span', { type: 'chars', charsClass: 'char' });
+      const mark = SplitText.create('.footer__word', { type: 'chars', charsClass: 'char' });
       gsap.from(mark.chars, {
         yPercent: 100, duration: 1.4, ease: 'expo.out', stagger: 0.06,
         scrollTrigger: { trigger: '.footer__mark', start: 'top 96%', once: true },
       });
     }
+    const xLines = $$('.footer__x path');
+    const vlvLines = $$('.footer__vlv path:not(.vlv__accent)');
+    const vlvAccent = $('.footer__vlv .vlv__accent');
+    gsap.set([...xLines, ...vlvLines, vlvAccent], { strokeDasharray: 1, strokeDashoffset: 1 });
+    gsap.timeline({ scrollTrigger: { trigger: '.footer__by', start: 'top 92%', once: true } })
+      .to(xLines, { strokeDashoffset: 0, duration: 0.6, ease: 'power2.inOut', stagger: 0.15 })
+      .from('.footer__x', { rotation: -90, transformOrigin: '50% 50%', duration: 1.2, ease: 'expo.out' }, 0)
+      .to(vlvLines, { strokeDashoffset: 0, duration: 0.8, ease: 'power2.inOut', stagger: 0.12 }, 0.25)
+      .to(vlvAccent, { strokeDashoffset: 0, duration: 0.45, ease: 'power3.out' }, '-=0.15');
 
     /* ---- Reading progress ---- */
     gsap.to('.progress span', { scaleX: 1, ease: 'none', scrollTrigger: { start: 0, end: 'max', scrub: 0.3 } });
